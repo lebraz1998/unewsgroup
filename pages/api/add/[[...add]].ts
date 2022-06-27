@@ -9,23 +9,12 @@ import {
   Param,
   Post,
   Put,
-  Query,
-  Req,
-  Res,
   ValidationPipe,
 } from "@storyofams/next-api-decorators";
 
-import { IncomingForm } from "formidable";
 import { AddBodyDTO, AddUpdateDTO } from "../../../dto/add";
 import { methodNotAllowedExceptionHandler } from "../../../exceptions/dto";
-import {
-  readFileSync,
-  writeFileSync,
-  existsSync,
-  mkdirSync,
-  unlinkSync,
-} from "fs";
-var mv = require("mv");
+import { unlinkSync } from "fs";
 
 @Catch(methodNotAllowedExceptionHandler)
 class AddController {
@@ -74,8 +63,3 @@ class AddController {
   }
 }
 export default createHandler(AddController);
-const saveFile = async (file) => {
-  const data = readFileSync(file.path);
-  writeFileSync(__dirname + `/${file.name}`, data);
-  return;
-};

@@ -1,30 +1,15 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { prisma } from "../../../prisma/prisma";
 import {
-  Body,
   Catch,
   createHandler,
   Delete,
-  Get,
-  Param,
   Post,
-  Put,
   Query,
   Req,
   Res,
-  ValidationPipe,
 } from "@storyofams/next-api-decorators";
-
 import { IncomingForm } from "formidable";
-import { AddBodyDTO, AddUpdateDTO } from "../../../dto/add";
 import { methodNotAllowedExceptionHandler } from "../../../exceptions/dto";
-import {
-  readFileSync,
-  writeFileSync,
-  existsSync,
-  mkdirSync,
-  unlinkSync,
-} from "fs";
+import { unlinkSync } from "fs";
 var mv = require("mv");
 export const config = {
   api: {
@@ -57,8 +42,3 @@ class AddController {
   }
 }
 export default createHandler(AddController);
-const saveFile = async (file) => {
-  const data = readFileSync(file.path);
-  writeFileSync(__dirname + `/${file.name}`, data);
-  return;
-};
