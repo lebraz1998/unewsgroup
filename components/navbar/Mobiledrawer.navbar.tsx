@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
@@ -85,7 +85,7 @@ const MobileDrawer = () => {
         aria-label="menu-button"
         onClick={handleDrawerOpen}
       >
-        <MenuSharp />
+        <MenuSharp style={{ color: "white" }} />
       </IconButton>
     </MobileDrawerStyled>
   );

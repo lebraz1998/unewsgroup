@@ -1,5 +1,4 @@
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import { Typography } from "@mui/material";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -22,8 +21,7 @@ export default function SideNavBar() {
             paddingTop: 4,
             paddingLeft: "3px",
           }}
-        >
-        </Box>
+        ></Box>
         <List>
           {list.map((res) => (
             <ListItemButton
@@ -49,7 +47,7 @@ export default function SideNavBar() {
               >
                 <res.icon
                   style={{
-                    paddingRight:2,
+                    paddingRight: 2,
                     fontSize: 30,
                   }}
                 />
@@ -59,8 +57,7 @@ export default function SideNavBar() {
           ))}
         </List>
       </Box>
-      <Box>
-      </Box>
+      <Box></Box>
     </StyledSidebar>
   );
 }
@@ -69,5 +66,5 @@ const list = [
   {
     icon: DashboardOutlinedIcon,
     name: "dashboard",
-  }
+  },
 ];

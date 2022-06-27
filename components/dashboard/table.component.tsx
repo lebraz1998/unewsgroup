@@ -11,13 +11,26 @@ import AddUrlModal from "./add.dashboard";
 import Add from "@mui/icons-material/Add";
 
 export default function TableComponent({ urls }: { urls: Url[] }) {
+  const [modal, setModal] = useState<any>([]);
   return (
-    <div style={{ height: 500 }}>
+    <div id="table" style={{ height: 500 }}>
       <div style={{ display: "flex", flexDirection: "row-reverse" }}>
-        <IconButton>
+        <IconButton
+          onClick={() => {
+            setModal([
+              <AddUrlModal
+                url={{ created: Date.now(), imgUrl: "", title: "", url: "" }}
+                onCallBack={() => {
+                  setModal([]);
+                }}
+              />,
+            ]);
+          }}
+        >
           <Add />
         </IconButton>
       </div>
+      {modal}
       <DataGrid
         rows={urls.map((res) => ({
           col2: res,

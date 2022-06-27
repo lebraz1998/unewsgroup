@@ -11,8 +11,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import LinearProgress from "@mui/material/LinearProgress";
 import { StyledAddModal } from "../../styles/dashboard";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+
 import axios from "axios";
 import { useAppDispatch } from "../../hooks/redux.hooks";
 import { setDashboardUpdating } from "../../providers/slices/dashboard";
@@ -26,6 +25,7 @@ type ModalProps = {
 };
 export default function AddUrlModal({ url, onCallBack }: ModalProps) {
   const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState<any>();
   const [date, setDate] = useState();
   const dispatch = useAppDispatch();
   const { replace } = useRouter();
@@ -49,94 +49,113 @@ export default function AddUrlModal({ url, onCallBack }: ModalProps) {
           onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
             const data = new FormData(e.currentTarget);
-            let newurl;
-              newurl = {
-                title: parseInt(data.get("title") as any),
-                url: parseInt(data.get("url") as any),
-                createDate: new Date(
-                  data.get("createDate") as string,
-                ).getTime(),
-              };
+            var newurl = {
+              title: data.get("title"),
+              url: data.get("url"),
+              imgUrl: "",
+            };
             setLoading(true);
+
             if (url.id) {
-              axios
-                .put(`/api/add/${url.id}`, newurl)
-                .then((res) => {
-                  dispatch(setDashboardUpdating());
-                  onCallBack();
-                })
-                .catch((e) => {
-                  // replace("/login");
+              axios.delete("/api/image?id=" + url.imgUrl).then((res) => {
+                if (image) {
+                  axios.post("/api/image", image).then((res) => {
+                    newurl.imgUrl = res.data;
+                    axios
+                      .put(`/api/add/${url.id}`, newurl)
+                      .then((res) => {
+                        dispatch(setDashboardUpdating());
+                        onCallBack();
+                      })
+                      .catch((e) => {
+                        // replace("/login");
+                      });
+                  });
+                } else {
+                  axios
+                    .put(`/api/add/${url.id}`, newurl)
+                    .then((res) => {
+                      dispatch(setDashboardUpdating());
+                      onCallBack();
+                    })
+                    .catch((e) => {
+                      // replace("/login");
+                    });
+                }
+              });
+            } else {
+              if (image) {
+                axios.post("/api/image", image).then((res) => {
+                  newurl.imgUrl = res.data;
+                  axios.post("/api/add", newurl).then((res) => {
+                    dispatch(setDashboardUpdating());
+                    onCallBack();
+                  });
                 });
-            } else
-              axios
-                .post("/api/add", newurl)
-                .then((res) => {
-                  dispatch(setDashboardUpdating());
-                  onCallBack();
-                })
-                .catch((e) => {
-                  console.log(e);
-                  // replace("/login");
-                });
+              } else {
+                axios
+                  .post("/api/add", newurl)
+                  .then((res) => {
+                    dispatch(setDashboardUpdating());
+                    onCallBack();
+                  })
+                  .catch((e) => {
+                    console.log(e);
+
+                    // replace("/login");
+                  });
+              }
+            }
           }}
         >
           <DialogTitle>App Details</DialogTitle>
           <DialogContent style={{ maxWidth: 800 }}>
             <DialogContentText marginBottom={2}>
-              To add App data to the tabe, please enter all required
-              fields.
+              To add App data to the tabe, please enter all required fields.
             </DialogContentText>
-            <Grid container spacing={3}>
-                    <GridModal keys={"4"} full>
-                      <TextField
-                        margin="dense"
-                        id="title"
-                        name="title"
-                        defaultValue={url.title}
-                        label="App Title"
-                        type="text"
-                        fullWidth
-                        variant="outlined"
-                        required
-                      />
-                    </GridModal>
-                    <GridModal keys={"7"} full>
-                      <TextField
-                        margin="dense"
-                        id="url"
-                        name="url"
-                        defaultValue={url.url}
-                        label="App Title"
-                        type="text"
-                        fullWidth
-                        variant="outlined"
-                        required
-                      />
-                    </GridModal>
-                  <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <GridModal keys={"21999233"} full>
-                      <DatePicker
-                        label="Date"
-                        value={date}
-                        onChange={(
-                          f: any,
-                          keyboardInputValue?: string,
-                        ): void => {
-                          setDate(f);
-                        }}
-                        renderInput={(params) => (
-                          <TextField
-                            fullWidth
-                            required
-                            name="createDate"
-                            {...params}
-                          />
-                        )}
-                      />
-                    </GridModal>
-                  </LocalizationProvider>
-                </Grid>
+            <Grid container spacing={1}>
+              <GridModal keys={"asdas"} full>
+                <TextField
+                  type={"file"}
+                  onChange={(e) => {
+                    console.log();
+                    const formData = new FormData();
+                    formData.append(
+                      "image",
+                      (e.target as any).files[0],
+                      (e.target as any).files[0].name,
+                    );
+                    setImage(formData);
+                  }}
+                />
+              </GridModal>
+              <GridModal keys={"4"} full>
+                <TextField
+                  margin="dense"
+                  id="title"
+                  name="title"
+                  defaultValue={url.title}
+                  label="App Title"
+                  type="text"
+                  fullWidth
+                  variant="outlined"
+                  required
+                />
+              </GridModal>
+              <GridModal keys={"7"} full>
+                <TextField
+                  margin="dense"
+                  id="url"
+                  name="url"
+                  defaultValue={url.url}
+                  label="App URL"
+                  type="text"
+                  fullWidth
+                  variant="outlined"
+                  required
+                />
+              </GridModal>
+            </Grid>
           </DialogContent>
           <DialogActions>
             <Button variant="outlined" onClick={onCallBack}>

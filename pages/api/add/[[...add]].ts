@@ -9,10 +9,23 @@ import {
   Param,
   Post,
   Put,
+  Query,
+  Req,
+  Res,
   ValidationPipe,
 } from "@storyofams/next-api-decorators";
+
+import { IncomingForm } from "formidable";
 import { AddBodyDTO, AddUpdateDTO } from "../../../dto/add";
 import { methodNotAllowedExceptionHandler } from "../../../exceptions/dto";
+import {
+  readFileSync,
+  writeFileSync,
+  existsSync,
+  mkdirSync,
+  unlinkSync,
+} from "fs";
+var mv = require("mv");
 
 @Catch(methodNotAllowedExceptionHandler)
 class AddController {
@@ -41,7 +54,13 @@ class AddController {
   async delete(
     @Param("id", ValidationPipe({ whitelist: true, always: true })) id: string,
   ) {
-    return this.prismaService.url.delete({ where: { id: parseInt(id) } });
+    const result = await this.prismaService.url.delete({
+      where: { id: parseInt(id) },
+    });
+    try {
+      unlinkSync("." + result.imgUrl);
+    } catch (e) {}
+    return result;
   }
   @Put("/:id")
   async update(
@@ -55,3 +74,8 @@ class AddController {
   }
 }
 export default createHandler(AddController);
+const saveFile = async (file) => {
+  const data = readFileSync(file.path);
+  writeFileSync(__dirname + `/${file.name}`, data);
+  return;
+};

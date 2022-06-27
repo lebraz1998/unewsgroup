@@ -1,4 +1,3 @@
-import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -8,6 +7,7 @@ import Logout from "@mui/icons-material/Logout";
 import { useRouter } from "next/router";
 import { TopNavbarStyled } from "../../styles/navbar";
 import MobileDrawer from "./Mobiledrawer.navbar";
+import { removeCookies } from "cookies-next";
 
 export default function Navbar() {
   const { replace } = useRouter();
@@ -24,6 +24,7 @@ export default function Navbar() {
             <IconButton
               onClick={() => {
                 replace("/login");
+                removeCookies("token");
               }}
               size="large"
               aria-label="show 17 new notifications"

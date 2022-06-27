@@ -1059,22 +1059,6 @@ export namespace Prisma {
     ): CheckSelect<T, Prisma__urlClient<url>, Prisma__urlClient<urlGetPayload<T>>>
 
     /**
-     * Create many Urls.
-     *     @param {urlCreateManyArgs} args - Arguments to create many Urls.
-     *     @example
-     *     // Create many Urls
-     *     const url = await prisma.url.createMany({
-     *       data: {
-     *         // ... provide data here
-     *       }
-     *     })
-     *     
-    **/
-    createMany<T extends urlCreateManyArgs>(
-      args?: SelectSubset<T, urlCreateManyArgs>
-    ): PrismaPromise<BatchPayload>
-
-    /**
      * Delete a Url.
      * @param {urlDeleteArgs} args - Arguments to delete one Url.
      * @example
@@ -1486,19 +1470,6 @@ export namespace Prisma {
 
 
   /**
-   * url createMany
-   */
-  export type urlCreateManyArgs = {
-    /**
-     * The data used to create many urls.
-     * 
-    **/
-    data: Enumerable<urlCreateManyInput>
-    skipDuplicates?: boolean
-  }
-
-
-  /**
    * url update
    */
   export type urlUpdateArgs = {
@@ -1714,14 +1685,6 @@ export namespace Prisma {
     imgUrl?: NullableStringFieldUpdateOperationsInput | string | null
     created?: FloatFieldUpdateOperationsInput | number
     url?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type urlCreateManyInput = {
-    id?: number
-    title: string
-    imgUrl?: string | null
-    created: number
-    url: string
   }
 
   export type urlUpdateManyMutationInput = {
