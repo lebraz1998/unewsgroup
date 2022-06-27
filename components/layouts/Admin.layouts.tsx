@@ -1,10 +1,9 @@
-import Grid from '@mui/material/Grid'
-import Box from '@mui/system/Box'
-import React from 'react'
-import SideNavBar from '../navbar/Sidebar.navbar'
-import Navbar from '../navbar/Top.navbar'
+import Grid from "@mui/material/Grid";
+import Box from "@mui/system/Box";
+import SideNavBar from "../navbar/Sidebar.navbar";
+import Navbar from "../navbar/Top.navbar";
 interface Props {
-    children: JSX.Element[] | JSX.Element;
+  children: JSX.Element[] | JSX.Element;
 }
 function AdminLayout({ children }: Props) {
   return (
@@ -20,7 +19,7 @@ function AdminLayout({ children }: Props) {
         </Grid>
       </Grid>
     </div>
-  )
+  );
 }
 
-export default AdminLayout
+export default AdminLayout;

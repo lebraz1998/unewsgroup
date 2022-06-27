@@ -15,6 +15,14 @@ export class AddBodyDTO {
   @IsString()
   url: string;
 }
+
+export class LoginBodyDTO {
+  @IsString()
+  username: string;
+  @IsOptional()
+  @IsString()
+  password: string;
+}
 export class AddUpdateDTO {
   @IsOptional()
   @IsString()

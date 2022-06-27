@@ -1,29 +1,29 @@
-import Avatar from '@mui/material/Avatar'
 import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu"
-import MenuItem from '@mui/material/MenuItem'
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAppDispatch } from "../../hooks/redux.hooks";
 import MoreVertSharp from "@mui/icons-material/MoreVertSharp";
-import { Url } from '../../types/url';
-import DeleteDialog from './delete.dashboard';
-import AddUrlModal from './add.dashboard';
+import { Url } from "../../types/url";
+import DeleteDialog from "./delete.dashboard";
+import AddUrlModal from "./add.dashboard";
+import Add from "@mui/icons-material/Add";
 
-export default function TableComponent({
-  urls,
-}: {
-  urls: Url[];
-}) {
-  console.log(urls);
+export default function TableComponent({ urls }: { urls: Url[] }) {
   return (
     <div style={{ height: 500 }}>
+      <div style={{ display: "flex", flexDirection: "row-reverse" }}>
+        <IconButton>
+          <Add />
+        </IconButton>
+      </div>
       <DataGrid
         rows={urls.map((res) => ({
-          col6: res,
+          col2: res,
           id: res.id,
-          col1: res,
-          col2: res.title,
+
+          col1: res.title,
           col3: res.url,
           col4: res.created,
         }))}
@@ -37,25 +37,14 @@ const columns: GridColDef[] = [
     filterable: false,
 
     width: 60,
-    field: "col6",
+    field: "col2",
     headerName: "",
     renderCell: (param) => {
       return <ListMenu {...param.value}></ListMenu>;
     },
   },
-  {
-    field: "col1",
-    headerName: "Avartar",
-    width: 80,
-    renderCell: ({ value }) => {
-      return (
-        <Avatar src={value.profile} alt={value.name} title={value.name}>
-          {value.name}
-        </Avatar>
-      );
-    },
-  },
-  { field: "col2", headerName: "Title", width: 200 },
+
+  { field: "col1", headerName: "Title", width: 200 },
   { field: "col3", headerName: "Url", width: 160 },
   { field: "col4", headerName: "Created", width: 160 },
 ];
