@@ -14,6 +14,8 @@ export class AddBodyDTO {
   created: number;
   @IsString()
   url: string;
+  @IsNumber()
+  tagID: number;
 }
 
 export class LoginBodyDTO {
@@ -34,6 +36,9 @@ export class AddUpdateDTO {
   @IsOptional()
   @IsString()
   url: string;
+  @IsOptional()
+  @IsNumber()
+  tagID: number;
 }
 
 export class AddParamDTO {

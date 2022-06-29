@@ -22,6 +22,16 @@ export type url = {
   imgUrl: string | null
   created: number
   url: string
+  tagID: number
+}
+
+/**
+ * Model tag
+ * 
+ */
+export type tag = {
+  id: number
+  title: string
 }
 
 
@@ -174,6 +184,16 @@ export class PrismaClient<
     * ```
     */
   get url(): Prisma.urlDelegate<GlobalReject>;
+
+  /**
+   * `prisma.tag`: Exposes CRUD operations for the **tag** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Tags
+    * const tags = await prisma.tag.findMany()
+    * ```
+    */
+  get tag(): Prisma.tagDelegate<GlobalReject>;
 }
 
 export namespace Prisma {
@@ -205,7 +225,15 @@ export namespace Prisma {
   export type DecimalJsLike = runtime.DecimalJsLike
 
   /**
-   * Prisma Client JS version: 3.15.2
+   * Metrics 
+   */
+  export import Metrics = runtime.Metrics
+  export import Metric = runtime.Metric
+  export import MetricHistogram = runtime.MetricHistogram
+  export import MetricHistogramBucket = runtime.MetricHistogramBucket
+
+  /**
+   * Prisma Client JS version: 4.0.0
    * Query Engine version: 461d6a05159055555eb7dfb337c9fb271cbd4d7e
    */
   export type PrismaVersion = {
@@ -265,25 +293,68 @@ export namespace Prisma {
   export type InputJsonValue = string | number | boolean | InputJsonObject | InputJsonArray
 
   /**
+   * Types of the values used to represent different kinds of `null` values when working with JSON fields.
+   * 
+   * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
+   */
+  namespace NullTypes {
+    /**
+    * Type of `Prisma.DbNull`.
+    * 
+    * You cannot use other instances of this class. Please use the `Prisma.DbNull` value.
+    * 
+    * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
+    */
+    class DbNull {
+      private DbNull: never
+      private constructor()
+    }
+
+    /**
+    * Type of `Prisma.JsonNull`.
+    * 
+    * You cannot use other instances of this class. Please use the `Prisma.JsonNull` value.
+    * 
+    * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
+    */
+    class JsonNull {
+      private JsonNull: never
+      private constructor()
+    }
+
+    /**
+    * Type of `Prisma.AnyNull`.
+    * 
+    * You cannot use other instances of this class. Please use the `Prisma.AnyNull` value.
+    * 
+    * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
+    */
+    class AnyNull {
+      private AnyNull: never
+      private constructor()
+    }
+  }
+
+  /**
    * Helper for filtering JSON entries that have `null` on the database (empty on the db)
    * 
    * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
    */
-  export const DbNull: 'DbNull'
+  export const DbNull: NullTypes.DbNull
 
   /**
    * Helper for filtering JSON entries that have JSON `null` values (not empty on the db)
    * 
    * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
    */
-  export const JsonNull: 'JsonNull'
+  export const JsonNull: NullTypes.JsonNull
 
   /**
    * Helper for filtering JSON entries that are `Prisma.DbNull` or `Prisma.JsonNull`
    * 
    * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
    */
-  export const AnyNull: 'AnyNull'
+  export const AnyNull: NullTypes.AnyNull
 
   type SelectAndInclude = {
     select: any
@@ -590,7 +661,8 @@ export namespace Prisma {
   }
 
   export const ModelName: {
-    url: 'url'
+    url: 'url',
+    tag: 'tag'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -627,7 +699,8 @@ export namespace Prisma {
   export interface PrismaClientOptions {
     /**
      * Configure findUnique/findFirst to throw an error if the query returns null. 
-     *  * @example
+     * @deprecated since 4.0.0. Use `findUniqueOrThrow`/`findFirstOrThrow` methods instead.
+     * @example
      * ```
      * // Reject on both findUnique/findFirst
      * rejectOnNotFound: true
@@ -748,6 +821,54 @@ export namespace Prisma {
    */
 
 
+  /**
+   * Count Type TagCountOutputType
+   */
+
+
+  export type TagCountOutputType = {
+    url: number
+  }
+
+  export type TagCountOutputTypeSelect = {
+    url?: boolean
+  }
+
+  export type TagCountOutputTypeGetPayload<
+    S extends boolean | null | undefined | TagCountOutputTypeArgs,
+    U = keyof S
+      > = S extends true
+        ? TagCountOutputType
+    : S extends undefined
+    ? never
+    : S extends TagCountOutputTypeArgs
+    ?'include' extends U
+    ? TagCountOutputType 
+    : 'select' extends U
+    ? {
+    [P in TrueKeys<S['select']>]:
+    P extends keyof TagCountOutputType ? TagCountOutputType[P] : never
+  } 
+    : TagCountOutputType
+  : TagCountOutputType
+
+
+
+
+  // Custom InputTypes
+
+  /**
+   * TagCountOutputType without action
+   */
+  export type TagCountOutputTypeArgs = {
+    /**
+     * Select specific fields to fetch from the TagCountOutputType
+     * 
+    **/
+    select?: TagCountOutputTypeSelect | null
+  }
+
+
 
   /**
    * Models
@@ -769,11 +890,13 @@ export namespace Prisma {
   export type UrlAvgAggregateOutputType = {
     id: number | null
     created: number | null
+    tagID: number | null
   }
 
   export type UrlSumAggregateOutputType = {
     id: number | null
     created: number | null
+    tagID: number | null
   }
 
   export type UrlMinAggregateOutputType = {
@@ -782,6 +905,7 @@ export namespace Prisma {
     imgUrl: string | null
     created: number | null
     url: string | null
+    tagID: number | null
   }
 
   export type UrlMaxAggregateOutputType = {
@@ -790,6 +914,7 @@ export namespace Prisma {
     imgUrl: string | null
     created: number | null
     url: string | null
+    tagID: number | null
   }
 
   export type UrlCountAggregateOutputType = {
@@ -798,6 +923,7 @@ export namespace Prisma {
     imgUrl: number
     created: number
     url: number
+    tagID: number
     _all: number
   }
 
@@ -805,11 +931,13 @@ export namespace Prisma {
   export type UrlAvgAggregateInputType = {
     id?: true
     created?: true
+    tagID?: true
   }
 
   export type UrlSumAggregateInputType = {
     id?: true
     created?: true
+    tagID?: true
   }
 
   export type UrlMinAggregateInputType = {
@@ -818,6 +946,7 @@ export namespace Prisma {
     imgUrl?: true
     created?: true
     url?: true
+    tagID?: true
   }
 
   export type UrlMaxAggregateInputType = {
@@ -826,6 +955,7 @@ export namespace Prisma {
     imgUrl?: true
     created?: true
     url?: true
+    tagID?: true
   }
 
   export type UrlCountAggregateInputType = {
@@ -834,6 +964,7 @@ export namespace Prisma {
     imgUrl?: true
     created?: true
     url?: true
+    tagID?: true
     _all?: true
   }
 
@@ -935,6 +1066,7 @@ export namespace Prisma {
     imgUrl: string | null
     created: number
     url: string
+    tagID: number
     _count: UrlCountAggregateOutputType | null
     _avg: UrlAvgAggregateOutputType | null
     _sum: UrlSumAggregateOutputType | null
@@ -962,6 +1094,12 @@ export namespace Prisma {
     imgUrl?: boolean
     created?: boolean
     url?: boolean
+    tag?: boolean | tagArgs
+    tagID?: boolean
+  }
+
+  export type urlInclude = {
+    tag?: boolean | tagArgs
   }
 
   export type urlGetPayload<
@@ -973,11 +1111,14 @@ export namespace Prisma {
     ? never
     : S extends urlArgs | urlFindManyArgs
     ?'include' extends U
-    ? url 
+    ? url  & {
+    [P in TrueKeys<S['include']>]:
+        P extends 'tag' ? tagGetPayload<S['include'][P]> :  never
+  } 
     : 'select' extends U
     ? {
     [P in TrueKeys<S['select']>]:
-    P extends keyof url ? url[P] : never
+        P extends 'tag' ? tagGetPayload<S['select'][P]> :  P extends keyof url ? url[P] : never
   } 
     : url
   : url
@@ -1152,6 +1293,40 @@ export namespace Prisma {
     ): CheckSelect<T, Prisma__urlClient<url>, Prisma__urlClient<urlGetPayload<T>>>
 
     /**
+     * Find one Url that matches the filter or throw
+     * `NotFoundError` if no matches were found.
+     * @param {urlFindUniqueOrThrowArgs} args - Arguments to find a Url
+     * @example
+     * // Get one Url
+     * const url = await prisma.url.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends urlFindUniqueOrThrowArgs>(
+      args?: SelectSubset<T, urlFindUniqueOrThrowArgs>
+    ): CheckSelect<T, Prisma__urlClient<url>, Prisma__urlClient<urlGetPayload<T>>>
+
+    /**
+     * Find the first Url that matches the filter or
+     * throw `NotFoundError` if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {urlFindFirstOrThrowArgs} args - Arguments to find a Url
+     * @example
+     * // Get one Url
+     * const url = await prisma.url.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends urlFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, urlFindFirstOrThrowArgs>
+    ): CheckSelect<T, Prisma__urlClient<url>, Prisma__urlClient<urlGetPayload<T>>>
+
+    /**
      * Count the number of Urls.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
@@ -1301,6 +1476,7 @@ export namespace Prisma {
     constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
     readonly [Symbol.toStringTag]: 'PrismaClientPromise';
 
+    tag<T extends tagArgs = {}>(args?: Subset<T, tagArgs>): CheckSelect<T, Prisma__tagClient<tag | null >, Prisma__tagClient<tagGetPayload<T> | null >>;
 
     private get _document();
     /**
@@ -1328,19 +1504,19 @@ export namespace Prisma {
   // Custom InputTypes
 
   /**
-   * url findUnique
+   * url base type for findUnique actions
    */
-  export type urlFindUniqueArgs = {
+  export type urlFindUniqueArgsBase = {
     /**
      * Select specific fields to fetch from the url
      * 
     **/
     select?: urlSelect | null
     /**
-     * Throw an Error if a url can't be found
+     * Choose, which related nodes to fetch as well.
      * 
     **/
-    rejectOnNotFound?: RejectOnNotFound
+    include?: urlInclude | null
     /**
      * Filter, which url to fetch.
      * 
@@ -1348,21 +1524,32 @@ export namespace Prisma {
     where: urlWhereUniqueInput
   }
 
+  /**
+   * url: findUnique
+   */
+  export interface urlFindUniqueArgs extends urlFindUniqueArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
 
   /**
-   * url findFirst
+   * url base type for findFirst actions
    */
-  export type urlFindFirstArgs = {
+  export type urlFindFirstArgsBase = {
     /**
      * Select specific fields to fetch from the url
      * 
     **/
     select?: urlSelect | null
     /**
-     * Throw an Error if a url can't be found
+     * Choose, which related nodes to fetch as well.
      * 
     **/
-    rejectOnNotFound?: RejectOnNotFound
+    include?: urlInclude | null
     /**
      * Filter, which url to fetch.
      * 
@@ -1405,6 +1592,17 @@ export namespace Prisma {
     distinct?: Enumerable<UrlScalarFieldEnum>
   }
 
+  /**
+   * url: findFirst
+   */
+  export interface urlFindFirstArgs extends urlFindFirstArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
 
   /**
    * url findMany
@@ -1415,6 +1613,11 @@ export namespace Prisma {
      * 
     **/
     select?: urlSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: urlInclude | null
     /**
      * Filter, which urls to fetch.
      * 
@@ -1462,6 +1665,11 @@ export namespace Prisma {
     **/
     select?: urlSelect | null
     /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: urlInclude | null
+    /**
      * The data needed to create a url.
      * 
     **/
@@ -1478,6 +1686,11 @@ export namespace Prisma {
      * 
     **/
     select?: urlSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: urlInclude | null
     /**
      * The data needed to update a url.
      * 
@@ -1518,6 +1731,11 @@ export namespace Prisma {
     **/
     select?: urlSelect | null
     /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: urlInclude | null
+    /**
      * The filter to search for the url to update in case it exists.
      * 
     **/
@@ -1545,6 +1763,11 @@ export namespace Prisma {
     **/
     select?: urlSelect | null
     /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: urlInclude | null
+    /**
      * Filter which url to delete.
      * 
     **/
@@ -1565,6 +1788,18 @@ export namespace Prisma {
 
 
   /**
+   * url: findUniqueOrThrow
+   */
+  export type urlFindUniqueOrThrowArgs = urlFindUniqueArgsBase
+      
+
+  /**
+   * url: findFirstOrThrow
+   */
+  export type urlFindFirstOrThrowArgs = urlFindFirstArgsBase
+      
+
+  /**
    * url without action
    */
   export type urlArgs = {
@@ -1573,6 +1808,918 @@ export namespace Prisma {
      * 
     **/
     select?: urlSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: urlInclude | null
+  }
+
+
+
+  /**
+   * Model tag
+   */
+
+
+  export type AggregateTag = {
+    _count: TagCountAggregateOutputType | null
+    _avg: TagAvgAggregateOutputType | null
+    _sum: TagSumAggregateOutputType | null
+    _min: TagMinAggregateOutputType | null
+    _max: TagMaxAggregateOutputType | null
+  }
+
+  export type TagAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type TagSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type TagMinAggregateOutputType = {
+    id: number | null
+    title: string | null
+  }
+
+  export type TagMaxAggregateOutputType = {
+    id: number | null
+    title: string | null
+  }
+
+  export type TagCountAggregateOutputType = {
+    id: number
+    title: number
+    _all: number
+  }
+
+
+  export type TagAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type TagSumAggregateInputType = {
+    id?: true
+  }
+
+  export type TagMinAggregateInputType = {
+    id?: true
+    title?: true
+  }
+
+  export type TagMaxAggregateInputType = {
+    id?: true
+    title?: true
+  }
+
+  export type TagCountAggregateInputType = {
+    id?: true
+    title?: true
+    _all?: true
+  }
+
+  export type TagAggregateArgs = {
+    /**
+     * Filter which tag to aggregate.
+     * 
+    **/
+    where?: tagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of tags to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<tagOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     * 
+    **/
+    cursor?: tagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` tags from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` tags.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned tags
+    **/
+    _count?: true | TagCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TagAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TagSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TagMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TagMaxAggregateInputType
+  }
+
+  export type GetTagAggregateType<T extends TagAggregateArgs> = {
+        [P in keyof T & keyof AggregateTag]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTag[P]>
+      : GetScalarType<T[P], AggregateTag[P]>
+  }
+
+
+
+
+  export type TagGroupByArgs = {
+    where?: tagWhereInput
+    orderBy?: Enumerable<tagOrderByWithAggregationInput>
+    by: Array<TagScalarFieldEnum>
+    having?: tagScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TagCountAggregateInputType | true
+    _avg?: TagAvgAggregateInputType
+    _sum?: TagSumAggregateInputType
+    _min?: TagMinAggregateInputType
+    _max?: TagMaxAggregateInputType
+  }
+
+
+  export type TagGroupByOutputType = {
+    id: number
+    title: string
+    _count: TagCountAggregateOutputType | null
+    _avg: TagAvgAggregateOutputType | null
+    _sum: TagSumAggregateOutputType | null
+    _min: TagMinAggregateOutputType | null
+    _max: TagMaxAggregateOutputType | null
+  }
+
+  type GetTagGroupByPayload<T extends TagGroupByArgs> = PrismaPromise<
+    Array<
+      PickArray<TagGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TagGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TagGroupByOutputType[P]>
+            : GetScalarType<T[P], TagGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type tagSelect = {
+    id?: boolean
+    title?: boolean
+    url?: boolean | urlFindManyArgs
+    _count?: boolean | TagCountOutputTypeArgs
+  }
+
+  export type tagInclude = {
+    url?: boolean | urlFindManyArgs
+    _count?: boolean | TagCountOutputTypeArgs
+  }
+
+  export type tagGetPayload<
+    S extends boolean | null | undefined | tagArgs,
+    U = keyof S
+      > = S extends true
+        ? tag
+    : S extends undefined
+    ? never
+    : S extends tagArgs | tagFindManyArgs
+    ?'include' extends U
+    ? tag  & {
+    [P in TrueKeys<S['include']>]:
+        P extends 'url' ? Array < urlGetPayload<S['include'][P]>>  :
+        P extends '_count' ? TagCountOutputTypeGetPayload<S['include'][P]> :  never
+  } 
+    : 'select' extends U
+    ? {
+    [P in TrueKeys<S['select']>]:
+        P extends 'url' ? Array < urlGetPayload<S['select'][P]>>  :
+        P extends '_count' ? TagCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof tag ? tag[P] : never
+  } 
+    : tag
+  : tag
+
+
+  type tagCountArgs = Merge<
+    Omit<tagFindManyArgs, 'select' | 'include'> & {
+      select?: TagCountAggregateInputType | true
+    }
+  >
+
+  export interface tagDelegate<GlobalRejectSettings> {
+    /**
+     * Find zero or one Tag that matches the filter.
+     * @param {tagFindUniqueArgs} args - Arguments to find a Tag
+     * @example
+     * // Get one Tag
+     * const tag = await prisma.tag.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends tagFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, tagFindUniqueArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'tag'> extends True ? CheckSelect<T, Prisma__tagClient<tag>, Prisma__tagClient<tagGetPayload<T>>> : CheckSelect<T, Prisma__tagClient<tag | null >, Prisma__tagClient<tagGetPayload<T> | null >>
+
+    /**
+     * Find the first Tag that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {tagFindFirstArgs} args - Arguments to find a Tag
+     * @example
+     * // Get one Tag
+     * const tag = await prisma.tag.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends tagFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, tagFindFirstArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'tag'> extends True ? CheckSelect<T, Prisma__tagClient<tag>, Prisma__tagClient<tagGetPayload<T>>> : CheckSelect<T, Prisma__tagClient<tag | null >, Prisma__tagClient<tagGetPayload<T> | null >>
+
+    /**
+     * Find zero or more Tags that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {tagFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Tags
+     * const tags = await prisma.tag.findMany()
+     * 
+     * // Get first 10 Tags
+     * const tags = await prisma.tag.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const tagWithIdOnly = await prisma.tag.findMany({ select: { id: true } })
+     * 
+    **/
+    findMany<T extends tagFindManyArgs>(
+      args?: SelectSubset<T, tagFindManyArgs>
+    ): CheckSelect<T, PrismaPromise<Array<tag>>, PrismaPromise<Array<tagGetPayload<T>>>>
+
+    /**
+     * Create a Tag.
+     * @param {tagCreateArgs} args - Arguments to create a Tag.
+     * @example
+     * // Create one Tag
+     * const Tag = await prisma.tag.create({
+     *   data: {
+     *     // ... data to create a Tag
+     *   }
+     * })
+     * 
+    **/
+    create<T extends tagCreateArgs>(
+      args: SelectSubset<T, tagCreateArgs>
+    ): CheckSelect<T, Prisma__tagClient<tag>, Prisma__tagClient<tagGetPayload<T>>>
+
+    /**
+     * Delete a Tag.
+     * @param {tagDeleteArgs} args - Arguments to delete one Tag.
+     * @example
+     * // Delete one Tag
+     * const Tag = await prisma.tag.delete({
+     *   where: {
+     *     // ... filter to delete one Tag
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends tagDeleteArgs>(
+      args: SelectSubset<T, tagDeleteArgs>
+    ): CheckSelect<T, Prisma__tagClient<tag>, Prisma__tagClient<tagGetPayload<T>>>
+
+    /**
+     * Update one Tag.
+     * @param {tagUpdateArgs} args - Arguments to update one Tag.
+     * @example
+     * // Update one Tag
+     * const tag = await prisma.tag.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends tagUpdateArgs>(
+      args: SelectSubset<T, tagUpdateArgs>
+    ): CheckSelect<T, Prisma__tagClient<tag>, Prisma__tagClient<tagGetPayload<T>>>
+
+    /**
+     * Delete zero or more Tags.
+     * @param {tagDeleteManyArgs} args - Arguments to filter Tags to delete.
+     * @example
+     * // Delete a few Tags
+     * const { count } = await prisma.tag.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends tagDeleteManyArgs>(
+      args?: SelectSubset<T, tagDeleteManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Tags.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {tagUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Tags
+     * const tag = await prisma.tag.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends tagUpdateManyArgs>(
+      args: SelectSubset<T, tagUpdateManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Tag.
+     * @param {tagUpsertArgs} args - Arguments to update or create a Tag.
+     * @example
+     * // Update or create a Tag
+     * const tag = await prisma.tag.upsert({
+     *   create: {
+     *     // ... data to create a Tag
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Tag we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends tagUpsertArgs>(
+      args: SelectSubset<T, tagUpsertArgs>
+    ): CheckSelect<T, Prisma__tagClient<tag>, Prisma__tagClient<tagGetPayload<T>>>
+
+    /**
+     * Find one Tag that matches the filter or throw
+     * `NotFoundError` if no matches were found.
+     * @param {tagFindUniqueOrThrowArgs} args - Arguments to find a Tag
+     * @example
+     * // Get one Tag
+     * const tag = await prisma.tag.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends tagFindUniqueOrThrowArgs>(
+      args?: SelectSubset<T, tagFindUniqueOrThrowArgs>
+    ): CheckSelect<T, Prisma__tagClient<tag>, Prisma__tagClient<tagGetPayload<T>>>
+
+    /**
+     * Find the first Tag that matches the filter or
+     * throw `NotFoundError` if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {tagFindFirstOrThrowArgs} args - Arguments to find a Tag
+     * @example
+     * // Get one Tag
+     * const tag = await prisma.tag.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends tagFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, tagFindFirstOrThrowArgs>
+    ): CheckSelect<T, Prisma__tagClient<tag>, Prisma__tagClient<tagGetPayload<T>>>
+
+    /**
+     * Count the number of Tags.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {tagCountArgs} args - Arguments to filter Tags to count.
+     * @example
+     * // Count the number of Tags
+     * const count = await prisma.tag.count({
+     *   where: {
+     *     // ... the filter for the Tags we want to count
+     *   }
+     * })
+    **/
+    count<T extends tagCountArgs>(
+      args?: Subset<T, tagCountArgs>,
+    ): PrismaPromise<
+      T extends _Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TagCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Tag.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TagAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TagAggregateArgs>(args: Subset<T, TagAggregateArgs>): PrismaPromise<GetTagAggregateType<T>>
+
+    /**
+     * Group by Tag.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TagGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TagGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TagGroupByArgs['orderBy'] }
+        : { orderBy?: TagGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends TupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TagGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTagGroupByPayload<T> : PrismaPromise<InputErrors>
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for tag.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export class Prisma__tagClient<T> implements PrismaPromise<T> {
+    [prisma]: true;
+    private readonly _dmmf;
+    private readonly _fetcher;
+    private readonly _queryType;
+    private readonly _rootField;
+    private readonly _clientMethod;
+    private readonly _args;
+    private readonly _dataPath;
+    private readonly _errorFormat;
+    private readonly _measurePerformance?;
+    private _isList;
+    private _callsite;
+    private _requestPromise?;
+    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
+    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+
+    url<T extends urlFindManyArgs = {}>(args?: Subset<T, urlFindManyArgs>): CheckSelect<T, PrismaPromise<Array<url>>, PrismaPromise<Array<urlGetPayload<T>>>>;
+
+    private get _document();
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+  }
+
+  // Custom InputTypes
+
+  /**
+   * tag base type for findUnique actions
+   */
+  export type tagFindUniqueArgsBase = {
+    /**
+     * Select specific fields to fetch from the tag
+     * 
+    **/
+    select?: tagSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: tagInclude | null
+    /**
+     * Filter, which tag to fetch.
+     * 
+    **/
+    where: tagWhereUniqueInput
+  }
+
+  /**
+   * tag: findUnique
+   */
+  export interface tagFindUniqueArgs extends tagFindUniqueArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * tag base type for findFirst actions
+   */
+  export type tagFindFirstArgsBase = {
+    /**
+     * Select specific fields to fetch from the tag
+     * 
+    **/
+    select?: tagSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: tagInclude | null
+    /**
+     * Filter, which tag to fetch.
+     * 
+    **/
+    where?: tagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of tags to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<tagOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for tags.
+     * 
+    **/
+    cursor?: tagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` tags from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` tags.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of tags.
+     * 
+    **/
+    distinct?: Enumerable<TagScalarFieldEnum>
+  }
+
+  /**
+   * tag: findFirst
+   */
+  export interface tagFindFirstArgs extends tagFindFirstArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * tag findMany
+   */
+  export type tagFindManyArgs = {
+    /**
+     * Select specific fields to fetch from the tag
+     * 
+    **/
+    select?: tagSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: tagInclude | null
+    /**
+     * Filter, which tags to fetch.
+     * 
+    **/
+    where?: tagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of tags to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<tagOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing tags.
+     * 
+    **/
+    cursor?: tagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` tags from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` tags.
+     * 
+    **/
+    skip?: number
+    distinct?: Enumerable<TagScalarFieldEnum>
+  }
+
+
+  /**
+   * tag create
+   */
+  export type tagCreateArgs = {
+    /**
+     * Select specific fields to fetch from the tag
+     * 
+    **/
+    select?: tagSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: tagInclude | null
+    /**
+     * The data needed to create a tag.
+     * 
+    **/
+    data: XOR<tagCreateInput, tagUncheckedCreateInput>
+  }
+
+
+  /**
+   * tag update
+   */
+  export type tagUpdateArgs = {
+    /**
+     * Select specific fields to fetch from the tag
+     * 
+    **/
+    select?: tagSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: tagInclude | null
+    /**
+     * The data needed to update a tag.
+     * 
+    **/
+    data: XOR<tagUpdateInput, tagUncheckedUpdateInput>
+    /**
+     * Choose, which tag to update.
+     * 
+    **/
+    where: tagWhereUniqueInput
+  }
+
+
+  /**
+   * tag updateMany
+   */
+  export type tagUpdateManyArgs = {
+    /**
+     * The data used to update tags.
+     * 
+    **/
+    data: XOR<tagUpdateManyMutationInput, tagUncheckedUpdateManyInput>
+    /**
+     * Filter which tags to update
+     * 
+    **/
+    where?: tagWhereInput
+  }
+
+
+  /**
+   * tag upsert
+   */
+  export type tagUpsertArgs = {
+    /**
+     * Select specific fields to fetch from the tag
+     * 
+    **/
+    select?: tagSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: tagInclude | null
+    /**
+     * The filter to search for the tag to update in case it exists.
+     * 
+    **/
+    where: tagWhereUniqueInput
+    /**
+     * In case the tag found by the `where` argument doesn't exist, create a new tag with this data.
+     * 
+    **/
+    create: XOR<tagCreateInput, tagUncheckedCreateInput>
+    /**
+     * In case the tag was found with the provided `where` argument, update it with this data.
+     * 
+    **/
+    update: XOR<tagUpdateInput, tagUncheckedUpdateInput>
+  }
+
+
+  /**
+   * tag delete
+   */
+  export type tagDeleteArgs = {
+    /**
+     * Select specific fields to fetch from the tag
+     * 
+    **/
+    select?: tagSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: tagInclude | null
+    /**
+     * Filter which tag to delete.
+     * 
+    **/
+    where: tagWhereUniqueInput
+  }
+
+
+  /**
+   * tag deleteMany
+   */
+  export type tagDeleteManyArgs = {
+    /**
+     * Filter which tags to delete
+     * 
+    **/
+    where?: tagWhereInput
+  }
+
+
+  /**
+   * tag: findUniqueOrThrow
+   */
+  export type tagFindUniqueOrThrowArgs = tagFindUniqueArgsBase
+      
+
+  /**
+   * tag: findFirstOrThrow
+   */
+  export type tagFindFirstOrThrowArgs = tagFindFirstArgsBase
+      
+
+  /**
+   * tag without action
+   */
+  export type tagArgs = {
+    /**
+     * Select specific fields to fetch from the tag
+     * 
+    **/
+    select?: tagSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: tagInclude | null
   }
 
 
@@ -1589,10 +2736,19 @@ export namespace Prisma {
     title: 'title',
     imgUrl: 'imgUrl',
     created: 'created',
-    url: 'url'
+    url: 'url',
+    tagID: 'tagID'
   };
 
   export type UrlScalarFieldEnum = (typeof UrlScalarFieldEnum)[keyof typeof UrlScalarFieldEnum]
+
+
+  export const TagScalarFieldEnum: {
+    id: 'id',
+    title: 'title'
+  };
+
+  export type TagScalarFieldEnum = (typeof TagScalarFieldEnum)[keyof typeof TagScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -1617,6 +2773,8 @@ export namespace Prisma {
     imgUrl?: StringNullableFilter | string | null
     created?: FloatFilter | number
     url?: StringFilter | string
+    tag?: XOR<TagRelationFilter, tagWhereInput>
+    tagID?: IntFilter | number
   }
 
   export type urlOrderByWithRelationInput = {
@@ -1625,6 +2783,8 @@ export namespace Prisma {
     imgUrl?: SortOrder
     created?: SortOrder
     url?: SortOrder
+    tag?: tagOrderByWithRelationInput
+    tagID?: SortOrder
   }
 
   export type urlWhereUniqueInput = {
@@ -1639,6 +2799,7 @@ export namespace Prisma {
     imgUrl?: SortOrder
     created?: SortOrder
     url?: SortOrder
+    tagID?: SortOrder
     _count?: urlCountOrderByAggregateInput
     _avg?: urlAvgOrderByAggregateInput
     _max?: urlMaxOrderByAggregateInput
@@ -1655,6 +2816,45 @@ export namespace Prisma {
     imgUrl?: StringNullableWithAggregatesFilter | string | null
     created?: FloatWithAggregatesFilter | number
     url?: StringWithAggregatesFilter | string
+    tagID?: IntWithAggregatesFilter | number
+  }
+
+  export type tagWhereInput = {
+    AND?: Enumerable<tagWhereInput>
+    OR?: Enumerable<tagWhereInput>
+    NOT?: Enumerable<tagWhereInput>
+    id?: IntFilter | number
+    title?: StringFilter | string
+    url?: UrlListRelationFilter
+  }
+
+  export type tagOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    url?: urlOrderByRelationAggregateInput
+  }
+
+  export type tagWhereUniqueInput = {
+    id?: number
+    title?: string
+  }
+
+  export type tagOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    _count?: tagCountOrderByAggregateInput
+    _avg?: tagAvgOrderByAggregateInput
+    _max?: tagMaxOrderByAggregateInput
+    _min?: tagMinOrderByAggregateInput
+    _sum?: tagSumOrderByAggregateInput
+  }
+
+  export type tagScalarWhereWithAggregatesInput = {
+    AND?: Enumerable<tagScalarWhereWithAggregatesInput>
+    OR?: Enumerable<tagScalarWhereWithAggregatesInput>
+    NOT?: Enumerable<tagScalarWhereWithAggregatesInput>
+    id?: IntWithAggregatesFilter | number
+    title?: StringWithAggregatesFilter | string
   }
 
   export type urlCreateInput = {
@@ -1662,6 +2862,7 @@ export namespace Prisma {
     imgUrl?: string | null
     created: number
     url: string
+    tag?: tagCreateNestedOneWithoutUrlInput
   }
 
   export type urlUncheckedCreateInput = {
@@ -1670,6 +2871,7 @@ export namespace Prisma {
     imgUrl?: string | null
     created: number
     url: string
+    tagID?: number
   }
 
   export type urlUpdateInput = {
@@ -1677,6 +2879,7 @@ export namespace Prisma {
     imgUrl?: NullableStringFieldUpdateOperationsInput | string | null
     created?: FloatFieldUpdateOperationsInput | number
     url?: StringFieldUpdateOperationsInput | string
+    tag?: tagUpdateOneRequiredWithoutUrlNestedInput
   }
 
   export type urlUncheckedUpdateInput = {
@@ -1685,6 +2888,7 @@ export namespace Prisma {
     imgUrl?: NullableStringFieldUpdateOperationsInput | string | null
     created?: FloatFieldUpdateOperationsInput | number
     url?: StringFieldUpdateOperationsInput | string
+    tagID?: IntFieldUpdateOperationsInput | number
   }
 
   export type urlUpdateManyMutationInput = {
@@ -1700,6 +2904,38 @@ export namespace Prisma {
     imgUrl?: NullableStringFieldUpdateOperationsInput | string | null
     created?: FloatFieldUpdateOperationsInput | number
     url?: StringFieldUpdateOperationsInput | string
+    tagID?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type tagCreateInput = {
+    title: string
+    url?: urlCreateNestedManyWithoutTagInput
+  }
+
+  export type tagUncheckedCreateInput = {
+    id?: number
+    title: string
+    url?: urlUncheckedCreateNestedManyWithoutTagInput
+  }
+
+  export type tagUpdateInput = {
+    title?: StringFieldUpdateOperationsInput | string
+    url?: urlUpdateManyWithoutTagNestedInput
+  }
+
+  export type tagUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    url?: urlUncheckedUpdateManyWithoutTagNestedInput
+  }
+
+  export type tagUpdateManyMutationInput = {
+    title?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type tagUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
   }
 
   export type IntFilter = {
@@ -1752,17 +2988,24 @@ export namespace Prisma {
     not?: NestedFloatFilter | number
   }
 
+  export type TagRelationFilter = {
+    is?: tagWhereInput
+    isNot?: tagWhereInput
+  }
+
   export type urlCountOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
     imgUrl?: SortOrder
     created?: SortOrder
     url?: SortOrder
+    tagID?: SortOrder
   }
 
   export type urlAvgOrderByAggregateInput = {
     id?: SortOrder
     created?: SortOrder
+    tagID?: SortOrder
   }
 
   export type urlMaxOrderByAggregateInput = {
@@ -1771,6 +3014,7 @@ export namespace Prisma {
     imgUrl?: SortOrder
     created?: SortOrder
     url?: SortOrder
+    tagID?: SortOrder
   }
 
   export type urlMinOrderByAggregateInput = {
@@ -1779,11 +3023,13 @@ export namespace Prisma {
     imgUrl?: SortOrder
     created?: SortOrder
     url?: SortOrder
+    tagID?: SortOrder
   }
 
   export type urlSumOrderByAggregateInput = {
     id?: SortOrder
     created?: SortOrder
+    tagID?: SortOrder
   }
 
   export type IntWithAggregatesFilter = {
@@ -1852,6 +3098,45 @@ export namespace Prisma {
     _max?: NestedFloatFilter
   }
 
+  export type UrlListRelationFilter = {
+    every?: urlWhereInput
+    some?: urlWhereInput
+    none?: urlWhereInput
+  }
+
+  export type urlOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type tagCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+  }
+
+  export type tagAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type tagMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+  }
+
+  export type tagMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+  }
+
+  export type tagSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type tagCreateNestedOneWithoutUrlInput = {
+    create?: XOR<tagCreateWithoutUrlInput, tagUncheckedCreateWithoutUrlInput>
+    connectOrCreate?: tagCreateOrConnectWithoutUrlInput
+    connect?: tagWhereUniqueInput
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -1868,12 +3153,58 @@ export namespace Prisma {
     divide?: number
   }
 
+  export type tagUpdateOneRequiredWithoutUrlNestedInput = {
+    create?: XOR<tagCreateWithoutUrlInput, tagUncheckedCreateWithoutUrlInput>
+    connectOrCreate?: tagCreateOrConnectWithoutUrlInput
+    upsert?: tagUpsertWithoutUrlInput
+    connect?: tagWhereUniqueInput
+    update?: XOR<tagUpdateWithoutUrlInput, tagUncheckedUpdateWithoutUrlInput>
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type urlCreateNestedManyWithoutTagInput = {
+    create?: XOR<Enumerable<urlCreateWithoutTagInput>, Enumerable<urlUncheckedCreateWithoutTagInput>>
+    connectOrCreate?: Enumerable<urlCreateOrConnectWithoutTagInput>
+    connect?: Enumerable<urlWhereUniqueInput>
+  }
+
+  export type urlUncheckedCreateNestedManyWithoutTagInput = {
+    create?: XOR<Enumerable<urlCreateWithoutTagInput>, Enumerable<urlUncheckedCreateWithoutTagInput>>
+    connectOrCreate?: Enumerable<urlCreateOrConnectWithoutTagInput>
+    connect?: Enumerable<urlWhereUniqueInput>
+  }
+
+  export type urlUpdateManyWithoutTagNestedInput = {
+    create?: XOR<Enumerable<urlCreateWithoutTagInput>, Enumerable<urlUncheckedCreateWithoutTagInput>>
+    connectOrCreate?: Enumerable<urlCreateOrConnectWithoutTagInput>
+    upsert?: Enumerable<urlUpsertWithWhereUniqueWithoutTagInput>
+    set?: Enumerable<urlWhereUniqueInput>
+    disconnect?: Enumerable<urlWhereUniqueInput>
+    delete?: Enumerable<urlWhereUniqueInput>
+    connect?: Enumerable<urlWhereUniqueInput>
+    update?: Enumerable<urlUpdateWithWhereUniqueWithoutTagInput>
+    updateMany?: Enumerable<urlUpdateManyWithWhereWithoutTagInput>
+    deleteMany?: Enumerable<urlScalarWhereInput>
+  }
+
+  export type urlUncheckedUpdateManyWithoutTagNestedInput = {
+    create?: XOR<Enumerable<urlCreateWithoutTagInput>, Enumerable<urlUncheckedCreateWithoutTagInput>>
+    connectOrCreate?: Enumerable<urlCreateOrConnectWithoutTagInput>
+    upsert?: Enumerable<urlUpsertWithWhereUniqueWithoutTagInput>
+    set?: Enumerable<urlWhereUniqueInput>
+    disconnect?: Enumerable<urlWhereUniqueInput>
+    delete?: Enumerable<urlWhereUniqueInput>
+    connect?: Enumerable<urlWhereUniqueInput>
+    update?: Enumerable<urlUpdateWithWhereUniqueWithoutTagInput>
+    updateMany?: Enumerable<urlUpdateManyWithWhereWithoutTagInput>
+    deleteMany?: Enumerable<urlScalarWhereInput>
   }
 
   export type NestedIntFilter = {
@@ -2003,6 +3334,105 @@ export namespace Prisma {
     _max?: NestedFloatFilter
   }
 
+  export type tagCreateWithoutUrlInput = {
+    title: string
+  }
+
+  export type tagUncheckedCreateWithoutUrlInput = {
+    id?: number
+    title: string
+  }
+
+  export type tagCreateOrConnectWithoutUrlInput = {
+    where: tagWhereUniqueInput
+    create: XOR<tagCreateWithoutUrlInput, tagUncheckedCreateWithoutUrlInput>
+  }
+
+  export type tagUpsertWithoutUrlInput = {
+    update: XOR<tagUpdateWithoutUrlInput, tagUncheckedUpdateWithoutUrlInput>
+    create: XOR<tagCreateWithoutUrlInput, tagUncheckedCreateWithoutUrlInput>
+  }
+
+  export type tagUpdateWithoutUrlInput = {
+    title?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type tagUncheckedUpdateWithoutUrlInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type urlCreateWithoutTagInput = {
+    title: string
+    imgUrl?: string | null
+    created: number
+    url: string
+  }
+
+  export type urlUncheckedCreateWithoutTagInput = {
+    id?: number
+    title: string
+    imgUrl?: string | null
+    created: number
+    url: string
+  }
+
+  export type urlCreateOrConnectWithoutTagInput = {
+    where: urlWhereUniqueInput
+    create: XOR<urlCreateWithoutTagInput, urlUncheckedCreateWithoutTagInput>
+  }
+
+  export type urlUpsertWithWhereUniqueWithoutTagInput = {
+    where: urlWhereUniqueInput
+    update: XOR<urlUpdateWithoutTagInput, urlUncheckedUpdateWithoutTagInput>
+    create: XOR<urlCreateWithoutTagInput, urlUncheckedCreateWithoutTagInput>
+  }
+
+  export type urlUpdateWithWhereUniqueWithoutTagInput = {
+    where: urlWhereUniqueInput
+    data: XOR<urlUpdateWithoutTagInput, urlUncheckedUpdateWithoutTagInput>
+  }
+
+  export type urlUpdateManyWithWhereWithoutTagInput = {
+    where: urlScalarWhereInput
+    data: XOR<urlUpdateManyMutationInput, urlUncheckedUpdateManyWithoutUrlInput>
+  }
+
+  export type urlScalarWhereInput = {
+    AND?: Enumerable<urlScalarWhereInput>
+    OR?: Enumerable<urlScalarWhereInput>
+    NOT?: Enumerable<urlScalarWhereInput>
+    id?: IntFilter | number
+    title?: StringFilter | string
+    imgUrl?: StringNullableFilter | string | null
+    created?: FloatFilter | number
+    url?: StringFilter | string
+    tagID?: IntFilter | number
+  }
+
+  export type urlUpdateWithoutTagInput = {
+    title?: StringFieldUpdateOperationsInput | string
+    imgUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    created?: FloatFieldUpdateOperationsInput | number
+    url?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type urlUncheckedUpdateWithoutTagInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    imgUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    created?: FloatFieldUpdateOperationsInput | number
+    url?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type urlUncheckedUpdateManyWithoutUrlInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    imgUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    created?: FloatFieldUpdateOperationsInput | number
+    url?: StringFieldUpdateOperationsInput | string
+  }
+
 
 
   /**
@@ -2016,5 +3446,5 @@ export namespace Prisma {
   /**
    * DMMF
    */
-  export const dmmf: runtime.DMMF.Document;
+  export const dmmf: runtime.BaseDMMF
 }

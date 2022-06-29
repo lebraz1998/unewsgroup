@@ -29,7 +29,7 @@ const Home: NextPage<{ result: url[] }> = (props: { result: url[] }) => {
       <IndexStyled>
         <Grid container>
           {props.result.map((res) => (
-            <Grid id={res.id + ""} className="gridItem" item md={3} xs={12}>
+            <Grid key={res.id + ""} className="gridItem" item md={3} xs={12}>
               <a href={res.url} target={"__blank"}>
                 <Card sx={{ maxWidth: 345 }}>
                   <CardMedia

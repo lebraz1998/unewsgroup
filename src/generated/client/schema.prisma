@@ -17,4 +17,15 @@ model url {
   imgUrl  String? @default("")
   created Float
   url     String  @unique
+  tag     tag     @relation(fields: [tagID], references: [id])
+  tagID   Int     @default(-1)
+
+
+
+}
+
+model tag {
+  id    Int    @id @default(autoincrement())
+  title String @unique
+  url   url[]
 }

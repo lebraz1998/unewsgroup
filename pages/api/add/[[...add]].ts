@@ -36,6 +36,7 @@ class AddController {
         title: body.title,
         url: body.url,
         imgUrl: body.imgUrl,
+        tagID: body.tagID,
       },
     });
   }
