@@ -5,6 +5,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Box from "@mui/system/Box";
 import { useRouter } from "next/router";
+import TagIcon from '@mui/icons-material/Tag';
 import React from "react";
 import { StyledSidebar } from "../../styles/navbar";
 
@@ -27,7 +28,7 @@ export default function SideNavBar() {
             <ListItemButton
               id="item"
               key={res.name}
-              sx={{ marginBottom: 2 }}
+              sx={{ marginBottom: 2, dispaly: "flex" }}
               style={{
                 borderLeft: pathname.includes(res.name.toLowerCase())
                   ? "4px solid #0b2be4"
@@ -38,21 +39,14 @@ export default function SideNavBar() {
               }}
             >
               <ListItemIcon
-                sx={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: "100%",
-                  padding: 1,
-                }}
               >
                 <res.icon
                   style={{
-                    paddingRight: 2,
                     fontSize: 30,
                   }}
                 />
-                <Typography variant="h6">Dashboard</Typography>
               </ListItemIcon>
+              <Typography variant="h6">{res.name}</Typography>              
             </ListItemButton>
           ))}
         </List>
@@ -66,5 +60,9 @@ const list = [
   {
     icon: DashboardOutlinedIcon,
     name: "dashboard",
+  },
+  {
+    icon: TagIcon,
+    name: "tag",
   },
 ];

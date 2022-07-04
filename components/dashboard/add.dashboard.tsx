@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -17,6 +17,8 @@ import { useAppDispatch } from "../../hooks/redux.hooks";
 import { setDashboardUpdating } from "../../providers/slices/dashboard";
 import { useRouter } from "next/router";
 import { Url } from "../../types/url";
+import Autocomplete from "@mui/material/Autocomplete";
+import { Tag } from "../../types/tag";
 
 type ModalProps = {
   url: Url;
@@ -24,11 +26,22 @@ type ModalProps = {
   onCallBack: () => void;
 };
 export default function AddUrlModal({ url, onCallBack }: ModalProps) {
+  const [tags, setTags] = useState<any>([]);
+
+  
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState<any>();
+  const [tag, setTag] = useState<any>();
   const [date, setDate] = useState();
   const dispatch = useAppDispatch();
   const { replace } = useRouter();
+  useEffect(() => {
+    setLoading(true);
+    axios.get("/api/add").then((res) => {
+      setTags(res.data);
+      setLoading(false);
+    });
+  }, [])
   return (
     <Dialog open={true} onClose={onCallBack} fullScreen>
       <StyledAddModal>
@@ -155,6 +168,29 @@ export default function AddUrlModal({ url, onCallBack }: ModalProps) {
                   required
                 />
               </GridModal>
+              {tags.length > 0 && <GridModal keys={"312412"} full>
+                  <Autocomplete
+                    multiple
+                    limitTags={1}
+                    options={tags}
+                    fullWidth
+                    getOptionLabel={(option) => option.title}
+                    value={tag}
+                    onChange={(e, newValue) => {
+                      setTag(newValue);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        maxRows={1}
+                        {...params}
+                        label="tag"
+                        id="tag"
+                        name="tag"
+                      />
+                    )}
+                  />
+                </GridModal>}
+              
             </Grid>
           </DialogContent>
           <DialogActions>

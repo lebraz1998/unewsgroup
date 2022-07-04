@@ -4,4 +4,5 @@ export type Url = {
     imgUrl: string;
     created: number;
     url: string;
+    tagID?:number;
 }

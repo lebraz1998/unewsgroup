@@ -5,13 +5,12 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useState } from "react";
 import { useAppDispatch } from "../../hooks/redux.hooks";
 import MoreVertSharp from "@mui/icons-material/MoreVertSharp";
-import { Url } from "../../types/url";
-import DeleteDialog from "./delete.dashboard";
-import AddUrlModal from "./add.dashboard";
+import DeleteDialog from "./delete.tag";
 import Add from "@mui/icons-material/Add";
+import AddTagModal from "./add.tag";
 import { Tag } from "../../types/tag";
 
-export default function TableComponent({ urls, tags }: { urls: Url[], tags: Tag[] }) {
+export default function TableComponent({ tags }: { tags: Tag[] }) {
   const [modal, setModal] = useState<any>([]);
   return (
     <div id="table" style={{ height: 500 }}>
@@ -19,8 +18,8 @@ export default function TableComponent({ urls, tags }: { urls: Url[], tags: Tag[
         <IconButton
           onClick={() => {
             setModal([
-              <AddUrlModal
-                url={{ created: Date.now(), imgUrl: "", title: "", url: "" }}
+              <AddTagModal
+                tag={{ title: ""}}
                 onCallBack={() => {
                   setModal([]);
                 }}
@@ -33,13 +32,10 @@ export default function TableComponent({ urls, tags }: { urls: Url[], tags: Tag[
       </div>
       {modal}
       <DataGrid
-        rows={urls.map((res) => ({
+        rows={tags.map((res) => ({
           col2: res,
           id: res.id,
-
           col1: res.title,
-          col3: res.url,
-          col4: res.created,
         }))}
         columns={columns}
       />
@@ -59,11 +55,9 @@ const columns: GridColDef[] = [
   },
 
   { field: "col1", headerName: "Title", width: 200 },
-  { field: "col3", headerName: "Url", width: 160 },
-  { field: "col4", headerName: "Created", width: 160 },
 ];
 
-const ListMenu = (props: Url) => {
+const ListMenu = (props: Tag) => {
   const dispatch = useAppDispatch();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -77,7 +71,7 @@ const ListMenu = (props: Url) => {
     setModal([
       <DeleteDialog
         key={Date.now()}
-        url={props}
+        tag={props}
         onCallBack={() => {
           setModal([]);
           handleClose();
@@ -87,9 +81,9 @@ const ListMenu = (props: Url) => {
   };
   const handleOnPress = () => {
     setModal([
-      <AddUrlModal
+      <AddTagModal
         key={Date.now()}
-        url={props}
+        tag={props}
         onCallBack={() => {
           setModal([]);
           handleClose();
