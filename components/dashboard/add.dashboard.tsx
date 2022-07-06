@@ -18,7 +18,7 @@ import { setDashboardUpdating } from "../../providers/slices/dashboard";
 import { useRouter } from "next/router";
 import { Url } from "../../types/url";
 import Autocomplete from "@mui/material/Autocomplete";
-import { Tag } from "../../types/tag";
+import { tag } from "../../src/generated/client";
 
 type ModalProps = {
   url: Url;
@@ -26,22 +26,20 @@ type ModalProps = {
   onCallBack: () => void;
 };
 export default function AddUrlModal({ url, onCallBack }: ModalProps) {
-  const [tags, setTags] = useState<any>([]);
+  const [tags, setTags] = useState<tag[]>([]);
 
-  
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState<any>();
   const [tag, setTag] = useState<any>();
-  const [date, setDate] = useState();
   const dispatch = useAppDispatch();
-  const { replace } = useRouter();
   useEffect(() => {
     setLoading(true);
-    axios.get("/api/add").then((res) => {
+    axios.get("/api/tag").then((res) => {
       setTags(res.data);
+
       setLoading(false);
     });
-  }, [])
+  }, []);
   return (
     <Dialog open={true} onClose={onCallBack} fullScreen>
       <StyledAddModal>
@@ -66,7 +64,9 @@ export default function AddUrlModal({ url, onCallBack }: ModalProps) {
               title: data.get("title"),
               url: data.get("url"),
               imgUrl: "",
+              tagID: tag.id,
             };
+
             setLoading(true);
 
             if (url.id) {
@@ -168,7 +168,8 @@ export default function AddUrlModal({ url, onCallBack }: ModalProps) {
                   required
                 />
               </GridModal>
-              {tags.length > 0 && <GridModal keys={"312412"} full>
+              {
+                <GridModal keys={"312412"} full>
                   <Autocomplete
                     multiple
                     limitTags={1}
@@ -177,11 +178,13 @@ export default function AddUrlModal({ url, onCallBack }: ModalProps) {
                     getOptionLabel={(option) => option.title}
                     value={tag}
                     onChange={(e, newValue) => {
-                      setTag(newValue);
+                      setTag(newValue.length > 0 ? newValue[0] : []);
                     }}
+                    autoComplete={false}
                     renderInput={(params) => (
                       <TextField
                         maxRows={1}
+                        value={tag}
                         {...params}
                         label="tag"
                         id="tag"
@@ -189,8 +192,8 @@ export default function AddUrlModal({ url, onCallBack }: ModalProps) {
                       />
                     )}
                   />
-                </GridModal>}
-              
+                </GridModal>
+              }
             </Grid>
           </DialogContent>
           <DialogActions>
