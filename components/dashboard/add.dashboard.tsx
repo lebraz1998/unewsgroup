@@ -169,7 +169,7 @@ export default function AddUrlModal({ url, onCallBack }: ModalProps) {
                     required
                   />
                 </GridModal>
-                {
+                {tags.length > 0 && url.tagID && (
                   <GridModal keys={"312412"} full>
                     <Autocomplete
                       multiple
@@ -177,7 +177,7 @@ export default function AddUrlModal({ url, onCallBack }: ModalProps) {
                       options={tags}
                       fullWidth
                       getOptionLabel={(option) => option.title}
-                      value={tags.filter((res) => res.id === url.tagID)}
+                      defaultValue={tags.filter((res) => res.id === url.tagID)}
                       onChange={(e, newValue) => {
                         setTag(newValue.length > 0 ? newValue[0] : []);
                       }}
@@ -196,7 +196,31 @@ export default function AddUrlModal({ url, onCallBack }: ModalProps) {
                       )}
                     />
                   </GridModal>
-                }
+                )}
+                {!url.tagID && (
+                  <GridModal keys={"312412"} full>
+                    <Autocomplete
+                      multiple
+                      limitTags={1}
+                      options={tags}
+                      fullWidth
+                      getOptionLabel={(option) => option.title}
+                      onChange={(e, newValue) => {
+                        setTag(newValue.length > 0 ? newValue[0] : []);
+                      }}
+                      autoComplete={false}
+                      renderInput={(params) => (
+                        <TextField
+                          maxRows={1}
+                          {...params}
+                          label="tag"
+                          id="tag"
+                          name="tag"
+                        />
+                      )}
+                    />
+                  </GridModal>
+                )}
               </Grid>
             </DialogContent>
             <DialogActions>
