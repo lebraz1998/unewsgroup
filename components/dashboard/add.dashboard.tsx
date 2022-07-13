@@ -36,10 +36,10 @@ export default function AddUrlModal({ url, onCallBack }: ModalProps) {
     setLoading(true);
     axios.get("/api/tag").then((res) => {
       setTags(res.data);
-
       setLoading(false);
     });
-  }, []);
+  }, [url.tagID]);
+  console.log(tag);
   return (
     <Dialog open={true} onClose={onCallBack} fullScreen>
       <StyledAddModal>
@@ -54,26 +54,38 @@ export default function AddUrlModal({ url, onCallBack }: ModalProps) {
         >
           <LinearProgress color="info" style={{ width: "100%" }} />
         </Backdrop>{" "}
-        <Box
-          id="add-event-modal"
-          component="form"
-          onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
-            e.preventDefault();
-            const data = new FormData(e.currentTarget);
-            var newurl = {
-              title: data.get("title"),
-              url: data.get("url"),
-              imgUrl: "",
-              tagID: tag.id,
-            };
+        {
+          <Box
+            id="add-event-modal"
+            component="form"
+            onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
+              e.preventDefault();
+              const data = new FormData(e.currentTarget);
+              var newurl = {
+                title: data.get("title"),
+                url: data.get("url"),
+                imgUrl: "",
+                tagID: tag ? tag.id : url.tagID,
+              };
 
-            setLoading(true);
+              setLoading(true);
 
-            if (url.id) {
-              axios.delete("/api/image?id=" + url.imgUrl).then((res) => {
-                if (image) {
-                  axios.post("/api/image", image).then((res) => {
-                    newurl.imgUrl = res.data;
+              if (url.id) {
+                axios.delete("/api/image?id=" + url.imgUrl).then((res) => {
+                  if (image) {
+                    axios.post("/api/image", image).then((res) => {
+                      newurl.imgUrl = res.data;
+                      axios
+                        .put(`/api/add/${url.id}`, newurl)
+                        .then((res) => {
+                          dispatch(setDashboardUpdating());
+                          onCallBack();
+                        })
+                        .catch((e) => {
+                          // replace("/login");
+                        });
+                    });
+                  } else {
                     axios
                       .put(`/api/add/${url.id}`, newurl)
                       .then((res) => {
@@ -83,136 +95,128 @@ export default function AddUrlModal({ url, onCallBack }: ModalProps) {
                       .catch((e) => {
                         // replace("/login");
                       });
+                  }
+                });
+              } else {
+                if (image) {
+                  axios.post("/api/image", image).then((res) => {
+                    newurl.imgUrl = res.data;
+                    axios.post("/api/add", newurl).then((res) => {
+                      dispatch(setDashboardUpdating());
+                      onCallBack();
+                    });
                   });
                 } else {
                   axios
-                    .put(`/api/add/${url.id}`, newurl)
+                    .post("/api/add", newurl)
                     .then((res) => {
                       dispatch(setDashboardUpdating());
                       onCallBack();
                     })
                     .catch((e) => {
+                      console.log(e);
+
                       // replace("/login");
                     });
                 }
-              });
-            } else {
-              if (image) {
-                axios.post("/api/image", image).then((res) => {
-                  newurl.imgUrl = res.data;
-                  axios.post("/api/add", newurl).then((res) => {
-                    dispatch(setDashboardUpdating());
-                    onCallBack();
-                  });
-                });
-              } else {
-                axios
-                  .post("/api/add", newurl)
-                  .then((res) => {
-                    dispatch(setDashboardUpdating());
-                    onCallBack();
-                  })
-                  .catch((e) => {
-                    console.log(e);
-
-                    // replace("/login");
-                  });
               }
-            }
-          }}
-        >
-          <DialogTitle>App Details</DialogTitle>
-          <DialogContent style={{ maxWidth: 800 }}>
-            <DialogContentText marginBottom={2}>
-              To add App data to the tabe, please enter all required fields.
-            </DialogContentText>
-            <Grid container spacing={1}>
-              <GridModal keys={"asdas"} full>
-                <TextField
-                  type={"file"}
-                  onChange={(e) => {
-                    console.log();
-                    const formData = new FormData();
-                    formData.append(
-                      "image",
-                      (e.target as any).files[0],
-                      (e.target as any).files[0].name,
-                    );
-                    setImage(formData);
-                  }}
-                />
-              </GridModal>
-              <GridModal keys={"4"} full>
-                <TextField
-                  margin="dense"
-                  id="title"
-                  name="title"
-                  defaultValue={url.title}
-                  label="App Title"
-                  type="text"
-                  fullWidth
-                  variant="outlined"
-                  required
-                />
-              </GridModal>
-              <GridModal keys={"7"} full>
-                <TextField
-                  margin="dense"
-                  id="url"
-                  name="url"
-                  defaultValue={url.url}
-                  label="App URL"
-                  type="text"
-                  fullWidth
-                  variant="outlined"
-                  required
-                />
-              </GridModal>
-              {
-                <GridModal keys={"312412"} full>
-                  <Autocomplete
-                    multiple
-                    limitTags={1}
-                    options={tags}
-                    fullWidth
-                    getOptionLabel={(option) => option.title}
-                    value={tag}
-                    onChange={(e, newValue) => {
-                      setTag(newValue.length > 0 ? newValue[0] : []);
+            }}
+          >
+            <DialogTitle>App Details</DialogTitle>
+            <DialogContent style={{ maxWidth: 800 }}>
+              <DialogContentText marginBottom={2}>
+                To add App data to the tabe, please enter all required fields.
+              </DialogContentText>
+              <Grid container spacing={1}>
+                <GridModal keys={"asdas"} full>
+                  <TextField
+                    type={"file"}
+                    onChange={(e) => {
+                      console.log();
+                      const formData = new FormData();
+                      formData.append(
+                        "image",
+                        (e.target as any).files[0],
+                        (e.target as any).files[0].name,
+                      );
+                      setImage(formData);
                     }}
-                    autoComplete={false}
-                    renderInput={(params) => (
-                      <TextField
-                        maxRows={1}
-                        value={tag}
-                        {...params}
-                        label="tag"
-                        id="tag"
-                        name="tag"
-                      />
-                    )}
                   />
                 </GridModal>
-              }
-            </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Button variant="outlined" onClick={onCallBack}>
-              Cancel
-            </Button>
-            {url.id ? (
-              <>
-                <Button variant="contained" type="submit">
-                  Save
-                </Button>
-              </>
-            ) : (
-              <Button variant="contained" type="submit">
-                Add
+                <GridModal keys={"4"} full>
+                  <TextField
+                    margin="dense"
+                    id="title"
+                    name="title"
+                    defaultValue={url.title}
+                    label="App Title"
+                    type="text"
+                    fullWidth
+                    variant="outlined"
+                    required
+                  />
+                </GridModal>
+                <GridModal keys={"7"} full>
+                  <TextField
+                    margin="dense"
+                    id="url"
+                    name="url"
+                    defaultValue={url.url}
+                    label="App URL"
+                    type="text"
+                    fullWidth
+                    variant="outlined"
+                    required
+                  />
+                </GridModal>
+                {
+                  <GridModal keys={"312412"} full>
+                    <Autocomplete
+                      multiple
+                      limitTags={1}
+                      options={tags}
+                      fullWidth
+                      getOptionLabel={(option) => option.title}
+                      value={tags.filter((res) => res.id === url.tagID)}
+                      onChange={(e, newValue) => {
+                        setTag(newValue.length > 0 ? newValue[0] : []);
+                      }}
+                      autoComplete={false}
+                      renderInput={(params) => (
+                        <TextField
+                          maxRows={1}
+                          defaultValue={tags.filter(
+                            (res) => res.id === url.tagID,
+                          )}
+                          {...params}
+                          label="tag"
+                          id="tag"
+                          name="tag"
+                        />
+                      )}
+                    />
+                  </GridModal>
+                }
+              </Grid>
+            </DialogContent>
+            <DialogActions>
+              <Button variant="outlined" onClick={onCallBack}>
+                Cancel
               </Button>
-            )}
-          </DialogActions>
-        </Box>
+              {url.id ? (
+                <>
+                  <Button variant="contained" type="submit">
+                    Save
+                  </Button>
+                </>
+              ) : (
+                <Button variant="contained" type="submit">
+                  Add
+                </Button>
+              )}
+            </DialogActions>
+          </Box>
+        }
       </StyledAddModal>
     </Dialog>
   );

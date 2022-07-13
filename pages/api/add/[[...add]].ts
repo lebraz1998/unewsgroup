@@ -9,12 +9,13 @@ import {
   Param,
   Post,
   Put,
+  Req,
   ValidationPipe,
 } from "@storyofams/next-api-decorators";
 
 import { AddBodyDTO, AddUpdateDTO } from "../../../dto/add";
 import { methodNotAllowedExceptionHandler } from "../../../exceptions/dto";
-import { unlinkSync } from "fs";
+import { readFileSync, unlinkSync } from "fs";
 
 @Catch(methodNotAllowedExceptionHandler)
 class AddController {
@@ -39,6 +40,14 @@ class AddController {
         tagID: body.tagID,
       },
     });
+  }
+  @Get("/image/:id")
+  async read(@Param("id") id) {
+    try {
+      return readFileSync(process.cwd() + "/public/" + id);
+    } catch (e) {
+      return {};
+    }
   }
   @Delete("/:id")
   async delete(

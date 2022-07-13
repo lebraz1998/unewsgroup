@@ -55,7 +55,7 @@ export default function DashboardPage(props) {
         setLoading(false);
       });
     }
-  }, [state]);
+  }, [state.updateDashboardState]);
 
   return (
     <AdminLayout>

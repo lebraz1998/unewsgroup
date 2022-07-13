@@ -15,7 +15,7 @@ import { methodNotAllowedExceptionHandler } from "../../../exceptions/dto";
 import { sign } from "jsonwebtoken";
 @Catch(methodNotAllowedExceptionHandler)
 class LoginController {
-  login = [{ username: "jawadfadel", password: "testing" }];
+  login = [{ username: "admin", password: "pass@word" }];
   @Post()
   async create(@Body(ValidationPipe({ whitelist: true })) body: LoginBodyDTO) {
     var isOk = false;

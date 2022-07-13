@@ -2,16 +2,24 @@ import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { useState } from "react";
-import { useAppDispatch } from "../../hooks/redux.hooks";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux.hooks";
 import MoreVertSharp from "@mui/icons-material/MoreVertSharp";
 import { Url } from "../../types/url";
 import DeleteDialog from "./delete.dashboard";
 import AddUrlModal from "./add.dashboard";
 import Add from "@mui/icons-material/Add";
 import { Tag } from "../../types/tag";
+import moment from "moment";
+import { useRouter } from "next/router";
 
-export default function TableComponent({ urls, tags }: { urls: Url[], tags: Tag[] }) {
+export default function TableComponent({
+  urls,
+  tags,
+}: {
+  urls: Url[];
+  tags: Tag[];
+}) {
   const [modal, setModal] = useState<any>([]);
   return (
     <div id="table" style={{ height: 500 }}>
@@ -20,6 +28,7 @@ export default function TableComponent({ urls, tags }: { urls: Url[], tags: Tag[
           onClick={() => {
             setModal([
               <AddUrlModal
+                key={"sadasda"}
                 url={{ created: Date.now(), imgUrl: "", title: "", url: "" }}
                 onCallBack={() => {
                   setModal([]);
@@ -39,7 +48,7 @@ export default function TableComponent({ urls, tags }: { urls: Url[], tags: Tag[
 
           col1: res.title,
           col3: res.url,
-          col4: res.created,
+          col4: moment(res.created).format("DD-MM-yyy hh:mm a"),
         }))}
         columns={columns}
       />
@@ -64,8 +73,8 @@ const columns: GridColDef[] = [
 ];
 
 const ListMenu = (props: Url) => {
-  const dispatch = useAppDispatch();
-
+  const selector = useAppSelector((e) => e.dashboard);
+  const { reload } = useRouter();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [modal, setModal] = useState<any[]>([]);
   const open = Boolean(anchorEl);
@@ -100,6 +109,11 @@ const ListMenu = (props: Url) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  useEffect(() => {
+    if (selector.updateDashboardState !== 0) {
+      reload();
+    }
+  }, [selector.updateDashboardState, reload]);
 
   return (
     <>

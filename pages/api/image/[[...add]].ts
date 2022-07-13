@@ -2,6 +2,8 @@ import {
   Catch,
   createHandler,
   Delete,
+  Get,
+  Param,
   Post,
   Query,
   Req,
@@ -9,7 +11,8 @@ import {
 } from "@storyofams/next-api-decorators";
 import { IncomingForm } from "formidable";
 import { methodNotAllowedExceptionHandler } from "../../../exceptions/dto";
-import { unlinkSync } from "fs";
+import { readFileSync, unlinkSync } from "fs";
+import { NextApiResponse } from "next";
 var mv = require("mv");
 export const config = {
   api: {
@@ -28,17 +31,23 @@ class AddController {
         console.log(files);
         console.log((files.image as any).filepath);
         var oldPath = (files.image as any).filepath;
-        var newPath = `./public/${(files.image as any).originalFilename}`;
+        var newPath =
+          process.cwd() +
+          "/public/" +
+          `${(files.image as any).originalFilename}`;
         mv(oldPath, newPath, function (err) {
           console.log(err);
         });
-        res.end(newPath.replace(".", ""));
+        res.end((files.image as any).originalFilename);
       });
     });
   }
+
   @Delete("")
   async deleteImage(@Query("id") id: string) {
-    unlinkSync("." + id);
+    try {
+      unlinkSync(process.cwd() + "/public/" + id);
+    } catch (e) {}
   }
 }
 export default createHandler(AddController);

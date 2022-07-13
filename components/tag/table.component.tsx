@@ -19,7 +19,8 @@ export default function TableComponent({ tags }: { tags: Tag[] }) {
           onClick={() => {
             setModal([
               <AddTagModal
-                tag={{ title: ""}}
+                key={"sadasfasdasd"}
+                tag={{ title: "" }}
                 onCallBack={() => {
                   setModal([]);
                 }}

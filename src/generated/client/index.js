@@ -128,7 +128,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\Mhamad kadiry\\Desktop\\Personal Projects\\unewsgroup\\src\\generated\\client",
+      "value": "F:\\NewProjects\\unewsgroup\\src\\generated\\client",
       "fromEnvVar": null
     },
     "config": {
